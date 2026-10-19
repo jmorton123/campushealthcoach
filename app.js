@@ -11,6 +11,38 @@
   // Leave empty to use Netlify Forms (only works when hosted on Netlify).
   var FORM_ENDPOINT = 'https://formsubmit.co/ajax/j.jeffmorton@gmail.com';
 
+  // ---------------------------------------------------------------------------
+  // COACHES — edit names / taglines / colors HERE (and mirror the HTML fallback
+  // in index.html #coach-options). Layout is a 2x2 grid; add up to 4 entries.
+  // id: used for input id (coach-<id>). value: submitted as `coach`.
+  // initial: letter in the avatar. tone: short one-liner. avatarClass: Tailwind.
+  // ---------------------------------------------------------------------------
+  var COACHES = [
+    {
+      id: 'mike',
+      value: 'Coach Mike',
+      initial: 'M',
+      tone: 'Upbeat and direct',
+      avatarClass: 'bg-brand-600'
+    },
+    {
+      id: 'anna',
+      value: 'Coach Anna',
+      initial: 'A',
+      tone: 'Calm and encouraging',
+      avatarClass: 'bg-azure-500'
+    },
+    {
+      id: 'sophia',
+      value: 'Coach Sophia',
+      initial: 'S',
+      tone: 'Warm and motivating',
+      avatarClass: 'bg-brand-700'
+    }
+    // Add a 4th (male) coach here when ready, e.g.:
+    // { id: 'jordan', value: 'Coach Jordan', initial: 'J', tone: '…', avatarClass: 'bg-azure-600' },
+  ];
+
   var form = document.getElementById('early-access-form');
   var success = document.getElementById('form-success');
   var resetBtn = document.getElementById('reset-form');
@@ -19,6 +51,26 @@
   if (yearEl) {
     yearEl.textContent = String(new Date().getFullYear());
   }
+
+  function renderCoaches() {
+    var container = document.getElementById('coach-options');
+    if (!container || !COACHES.length) return;
+    var html = '';
+    COACHES.forEach(function (c) {
+      html +=
+        '<label class="coach-card relative flex items-center gap-3 rounded-xl border-2 border-slate-200 bg-white p-3.5">' +
+        '<input type="radio" name="coach" id="coach-' + c.id + '" value="' + c.value.replace(/"/g, '&quot;') + '" required />' +
+        '<span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full ' + c.avatarClass + ' text-white text-sm font-bold" aria-hidden="true">' + c.initial + '</span>' +
+        '<span class="min-w-0">' +
+        '<span class="block text-sm font-semibold text-slate-900">' + c.value + '</span>' +
+        '<span class="block text-xs text-slate-500">' + c.tone + '</span>' +
+        '</span>' +
+        '</label>';
+    });
+    container.innerHTML = html;
+  }
+
+  renderCoaches();
 
   if (!form) return;
 
@@ -31,19 +83,43 @@
       input.classList.remove('border-red-400');
       input.removeAttribute('aria-invalid');
     });
+    var fieldset = document.getElementById('coach-fieldset');
+    if (fieldset) fieldset.classList.remove('coach-invalid');
   }
 
   function showError(fieldId, message) {
-    var input = document.getElementById(fieldId);
     var msg = form.querySelector('.error-msg[data-for="' + fieldId + '"]');
-    if (input) {
-      input.classList.add('border-red-400');
-      input.setAttribute('aria-invalid', 'true');
+    if (fieldId === 'coach') {
+      form.querySelectorAll('input[name="coach"]').forEach(function (input) {
+        input.setAttribute('aria-invalid', 'true');
+      });
+      var fieldset = document.getElementById('coach-fieldset');
+      if (fieldset) fieldset.classList.add('coach-invalid');
+    } else {
+      var input = document.getElementById(fieldId);
+      if (input) {
+        input.classList.add('border-red-400');
+        input.setAttribute('aria-invalid', 'true');
+      }
     }
     if (msg) {
       msg.textContent = message;
       msg.classList.remove('hidden');
     }
+  }
+
+  function fieldValue(fieldName) {
+    var el = form.elements.namedItem(fieldName);
+    if (!el) return '';
+    // RadioNodeList
+    if (el.length !== undefined && el.value !== undefined && typeof el.item === 'function') {
+      return (el.value || '').trim();
+    }
+    return ((el.value || '') + '').trim();
+  }
+
+  function selectedCoach() {
+    return fieldValue('coach');
   }
 
   function isValidEmail(value) {
@@ -58,9 +134,10 @@
   function validate() {
     clearErrors();
     var ok = true;
-    var name = (form.name.value || '').trim();
-    var email = (form.email.value || '').trim();
-    var phone = (form.phone.value || '').trim();
+    var name = fieldValue('name');
+    var email = fieldValue('email');
+    var phone = fieldValue('phone');
+    var coach = selectedCoach();
 
     if (!name || name.length < 2) {
       showError('name', 'Please enter your full name.');
@@ -72,6 +149,10 @@
     }
     if (!phone || !isValidPhone(phone)) {
       showError('phone', 'Please enter a valid phone number (at least 10 digits).');
+      ok = false;
+    }
+    if (!coach) {
+      showError('coach', 'Please pick a coach.');
       ok = false;
     }
     return ok;
@@ -108,8 +189,6 @@
   }
 
   function detectNetlify() {
-    // Netlify injects forms handling on their hosts; still OK to POST elsewhere
-    // and fall back to local success if the network call fails.
     return true;
   }
 
@@ -128,23 +207,23 @@
     }
 
     var payload = {
-      name: (form.name.value || '').trim(),
-      email: (form.email.value || '').trim(),
-      phone: (form.phone.value || '').trim(),
-      school: (form.school.value || '').trim(),
+      name: fieldValue('name'),
+      email: fieldValue('email'),
+      phone: fieldValue('phone'),
+      school: fieldValue('school'),
+      coach: selectedCoach(),
       submittedAt: new Date().toISOString()
     };
 
     saveLocal(payload);
 
-    // Try Netlify Forms POST (works when deployed to Netlify).
-    // On file:// or other hosts, fetch may fail — we still show success.
     var body = new URLSearchParams();
     body.set('form-name', 'early-access');
     body.set('name', payload.name);
     body.set('email', payload.email);
     body.set('phone', payload.phone);
     body.set('school', payload.school);
+    body.set('coach', payload.coach);
 
     var finish = function () {
       showSuccess();
