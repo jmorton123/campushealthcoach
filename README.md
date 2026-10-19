@@ -76,4 +76,4 @@ Same note as Vercel for form capture — success UI + localStorage still work.
 - Daily check-ins, accountability teams, weekly summaries
 - $8/month
 - Pillars: Hydration, Food, Exercise, Sleep, Low-stress Reset
-- SMU (Southern Methodist University) beta mentioned on-page
+- Now in beta with a small group of college students

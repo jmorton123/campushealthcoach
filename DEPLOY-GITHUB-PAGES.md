@@ -49,4 +49,4 @@ Alternatives: Web3Forms, Basin, or a Google Form. Free tiers have monthly submis
 - [ ] Site loads at `https://jmorton123.github.io/campushealthcoach/`
 - [ ] Formspree endpoint added to `app.js` and a test signup received
 - [ ] (Optional) Custom domain + DNS + Enforce HTTPS
-- [ ] Review copy: founding pricing, "cancel anytime", SMU disclaimer
+- [ ] Review copy: founding pricing, "cancel anytime", beta framing
