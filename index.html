@@ -541,13 +541,21 @@
                 Choose your coach <span class="text-red-500" aria-hidden="true">*</span>
               </legend>
               <div id="coach-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <!-- Static fallback (Mike, Anna, Sophia). JS replaces these from COACHES in app.js. -->
+                <!-- Static fallback. JS re-renders from COACHES in app.js — edit names there. -->
                 <label class="coach-card relative flex items-center gap-3 rounded-xl border-2 border-slate-200 bg-white p-3.5">
-                  <input type="radio" name="coach" id="coach-mike" value="Coach Mike" required />
+                  <input type="radio" name="coach" id="coach-marcus" value="Coach Marcus" required />
                   <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white text-sm font-bold" aria-hidden="true">M</span>
                   <span class="min-w-0">
-                    <span class="block text-sm font-semibold text-slate-900">Coach Mike</span>
-                    <span class="block text-xs text-slate-500">Upbeat and direct</span>
+                    <span class="block text-sm font-semibold text-slate-900">Coach Marcus</span>
+                    <span class="block text-xs text-slate-500">Steady and focused</span>
+                  </span>
+                </label>
+                <label class="coach-card relative flex items-center gap-3 rounded-xl border-2 border-slate-200 bg-white p-3.5">
+                  <input type="radio" name="coach" id="coach-deuce" value="Coach Deuce" required />
+                  <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-azure-600 text-white text-sm font-bold" aria-hidden="true">D</span>
+                  <span class="min-w-0">
+                    <span class="block text-sm font-semibold text-slate-900">Coach Deuce</span>
+                    <span class="block text-xs text-slate-500">High-energy and fun</span>
                   </span>
                 </label>
                 <label class="coach-card relative flex items-center gap-3 rounded-xl border-2 border-slate-200 bg-white p-3.5">
