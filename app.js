@@ -19,11 +19,18 @@
   // ---------------------------------------------------------------------------
   var COACHES = [
     {
-      id: 'mike',
-      value: 'Coach Mike',
+      id: 'marcus',
+      value: 'Coach Marcus',
       initial: 'M',
-      tone: 'Upbeat and direct',
+      tone: 'Steady and focused',
       avatarClass: 'bg-brand-600'
+    },
+    {
+      id: 'deuce',
+      value: 'Coach Deuce',
+      initial: 'D',
+      tone: 'High-energy and fun',
+      avatarClass: 'bg-azure-600'
     },
     {
       id: 'anna',
@@ -39,8 +46,6 @@
       tone: 'Warm and motivating',
       avatarClass: 'bg-brand-700'
     }
-    // Add a 4th (male) coach here when ready, e.g.:
-    // { id: 'jordan', value: 'Coach Jordan', initial: 'J', tone: '…', avatarClass: 'bg-azure-600' },
   ];
 
   var form = document.getElementById('early-access-form');
