@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CampusHealthCoach — SMS-based AI health coaching for college students. You set the goals, text how the day went in your own words, and get accountability for $8/month or $65/year." />
+  <meta name="theme-color" content="#354CA1" />
+  <title>CampusHealthCoach — AI Health Coaching by Text</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // Primary brand blue #354CA1; azure accent #1570EF (AA with white); navy #1E2A5A
+            brand: {
+              50: '#eef0f8',
+              100: '#dce1f1',
+              200: '#b8c3e3',
+              300: '#8a9ad0',
+              400: '#5c74bd',
+              500: '#4560b0',
+              600: '#354CA1',
+              700: '#2a3d82',
+              800: '#213066',
+              900: '#1a264f',
+            },
+            azure: {
+              50: '#eef3ff',
+              100: '#dce7ff',
+              200: '#b8cfff',
+              300: '#7aa8f7',
+              400: '#2F80ED',
+              500: '#1570EF',
+              600: '#1A56DB',
+              700: '#1D4ED8',
+              800: '#1E3A8A',
+              900: '#1E2A5A',
+            },
+            navy: {
+              DEFAULT: '#1E2A5A',
+            },
+            slate: {
+              850: '#1a2332',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            soft: '0 4px 24px -4px rgba(53, 76, 161, 0.14)',
+            card: '0 8px 32px -8px rgba(15, 23, 42, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+    .hero-blob {
+      background: radial-gradient(ellipse at 30% 20%, rgba(53, 76, 161, 0.16), transparent 50%),
+                  radial-gradient(ellipse at 80% 55%, rgba(21, 112, 239, 0.12), transparent 45%),
+                  radial-gradient(ellipse at 50% 100%, rgba(30, 42, 90, 0.08), transparent 40%);
+    }
+    .form-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(53, 76, 161, 0.28);
+    }
+    .nav-blur {
+      backdrop-filter: saturate(180%) blur(12px);
+      -webkit-backdrop-filter: saturate(180%) blur(12px);
+    }
+  </style>
+</head>
+<body class="font-sans text-slate-800 antialiased bg-white">
+
+  <!-- Skip link -->
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-brand-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
+    Skip to content
+  </a>
+
+  <!-- Header -->
+  <header class="fixed top-0 inset-x-0 z-50 nav-blur bg-white/80 border-b border-slate-100">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <a href="#top" class="flex items-center gap-2 group" aria-label="CampusHealthCoach home">
+        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-soft" aria-hidden="true">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
+        </span>
+        <span class="font-bold text-slate-900 tracking-tight text-lg">
+          Campus<span class="text-brand-600">Health</span>Coach
+        </span>
+      </a>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600" aria-label="Primary">
+        <a href="#how-it-works" class="hover:text-brand-700 transition-colors">How it works</a>
+        <a href="#pillars" class="hover:text-brand-700 transition-colors">Pillars</a>
+        <a href="#pricing" class="hover:text-brand-700 transition-colors">Pricing</a>
+        <a href="#signup" class="inline-flex items-center justify-center rounded-full bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 shadow-soft transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2">
+          Get early access
+        </a>
+      </nav>
+      <a href="#signup" class="md:hidden inline-flex items-center rounded-full bg-brand-600 text-white text-sm font-medium px-4 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">
+        Sign up
+      </a>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section id="top" class="relative pt-28 pb-20 sm:pt-32 sm:pb-28 overflow-hidden hero-blob">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div>
+            <div class="inline-flex items-center gap-2 rounded-full bg-azure-50 border border-azure-100 px-3 py-1.5 text-sm text-azure-800 mb-6">
+              <span class="flex h-2 w-2 rounded-full bg-azure-500 animate-pulse" aria-hidden="true"></span>
+              Now in beta
+            </div>
+            <h1 class="text-4xl sm:text-5xl lg:text-[3.25rem] font-extrabold tracking-tight text-slate-900 leading-[1.1]">
+              Your goals. Your words. <span class="text-brand-600">By text.</span>
+            </h1>
+            <p class="mt-5 text-lg sm:text-xl text-slate-600 leading-relaxed max-w-xl">
+              CampusHealthCoach is SMS-based AI coaching for college students. You set the goals across five pillars, then text how the day went in your own words. Your coach celebrates wins, helps where you flag issues, and keeps you accountable. No app to download.
+            </p>
+            <p class="mt-5 text-sm font-medium text-slate-700">
+              Built on the 5 Pillars of College Health
+            </p>
+            <ul class="mt-3 flex flex-wrap gap-2" aria-label="The 5 Pillars of College Health">
+              <li class="inline-flex items-center rounded-full bg-brand-50 border border-brand-100 px-3 py-1 text-xs font-semibold text-brand-800">Hydration</li>
+              <li class="inline-flex items-center rounded-full bg-azure-50 border border-azure-100 px-3 py-1 text-xs font-semibold text-azure-800">Food</li>
+              <li class="inline-flex items-center rounded-full bg-brand-100 border border-brand-200 px-3 py-1 text-xs font-semibold text-brand-900">Exercise</li>
+              <li class="inline-flex items-center rounded-full bg-slate-100 border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700">Sleep</li>
+              <li class="inline-flex items-center rounded-full bg-azure-100 border border-azure-200 px-3 py-1 text-xs font-semibold text-azure-900">Low-stress Reset</li>
+            </ul>
+            <div class="mt-8 flex flex-col sm:flex-row gap-3">
+              <a href="#signup" class="inline-flex items-center justify-center rounded-full bg-brand-600 hover:bg-brand-700 text-white font-semibold px-7 py-3.5 shadow-soft transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2">
+                Join early access
+                <svg class="ml-2 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
+              <a href="#how-it-works" class="inline-flex items-center justify-center rounded-full bg-white hover:bg-azure-50 text-azure-700 font-semibold px-7 py-3.5 border-2 border-azure-500 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-azure-500 focus-visible:ring-offset-2">
+                See how it works
+              </a>
+            </div>
+            <p class="mt-6 text-sm text-slate-500">
+              Built for busy students. <span class="font-medium text-slate-700">$8/month or $65/year</span> after early access.
+            </p>
+          </div>
+
+          <!-- Hero visual: phone mock + message bubbles -->
+          <div class="relative mx-auto w-full max-w-sm lg:max-w-md" aria-hidden="true">
+            <div class="absolute -inset-8 bg-gradient-to-br from-brand-200/50 to-azure-200/40 rounded-[3rem] blur-2xl"></div>
+            <div class="relative bg-slate-900 rounded-[2rem] p-3 shadow-2xl shadow-slate-900/20">
+              <div class="bg-slate-50 rounded-[1.5rem] overflow-hidden">
+                <!-- Status bar -->
+                <div class="bg-white px-5 pt-3 pb-2 flex items-center justify-between text-[10px] font-medium text-slate-500 border-b border-slate-100">
+                  <span>9:41</span>
+                  <div class="flex gap-1 items-center">
+                    <span class="w-3.5 h-2 rounded-sm border border-slate-400 relative"><span class="absolute inset-0.5 right-1 bg-slate-400 rounded-[1px]"></span></span>
+                  </div>
+                </div>
+                <!-- Chat header -->
+                <div class="bg-white px-4 py-3 flex items-center gap-3 border-b border-slate-100">
+                  <div class="h-9 w-9 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white text-xs font-bold">CH</div>
+                  <div>
+                    <p class="text-sm font-semibold text-slate-900">CampusHealthCoach</p>
+                    <p class="text-[11px] text-brand-600">SMS · Active</p>
+                  </div>
+                </div>
+                <!-- Messages -->
+                <div class="px-4 py-4 space-y-3 min-h-[280px] bg-gradient-to-b from-slate-50 to-brand-50/30">
+                  <div class="flex justify-end">
+                    <div class="bg-brand-600 text-white rounded-2xl rounded-tr-md px-3.5 py-2.5 text-sm max-w-[90%]">
+                      Had a great workout, hydration was solid, and ate well. Sleep and stress relief need some work.
+                    </div>
+                  </div>
+                  <div class="flex justify-start">
+                    <div class="bg-white border border-slate-100 rounded-2xl rounded-tl-md px-3.5 py-2.5 text-sm text-slate-700 shadow-sm max-w-[90%]">
+                      Love those wins on workout, water, and food. For sleep: one step toward your in-bed-by-midnight goal tonight? Want a quick 2-min reset for stress?
+                    </div>
+                  </div>
+                  <div class="flex justify-end">
+                    <div class="bg-brand-600 text-white rounded-2xl rounded-tr-md px-3.5 py-2.5 text-sm max-w-[85%]">
+                      Yeah, send the reset
+                    </div>
+                  </div>
+                  <div class="flex justify-start">
+                    <div class="bg-white border border-slate-100 rounded-2xl rounded-tl-md px-3.5 py-2.5 text-sm text-slate-700 shadow-sm max-w-[90%]">
+                      Breathe in 4, hold 4, out 6. Twice. Then one stretch. You set the bar; I’ve got your back.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Beta strip -->
+    <section class="border-y border-slate-100 bg-slate-50/80" aria-label="Beta highlight">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-8 text-center sm:text-left">
+        <p class="text-sm font-medium text-slate-700">Now in beta with a small group of college students.</p>
+        <span class="hidden sm:block w-px h-6 bg-slate-200" aria-hidden="true"></span>
+        <p class="text-sm text-slate-500">Text-first. No new app. Works on any phone.</p>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how-it-works" class="py-20 sm:py-24">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-600 mb-3">How it works</p>
+          <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">Coaching that fits between classes</h2>
+          <p class="mt-4 text-lg text-slate-600">You drive it. Your coach supports. Small habits you stack, not overhauls. All through SMS, the app you already open every day.</p>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-5">
+          <!-- Step 1 -->
+          <article class="relative rounded-2xl bg-white border border-slate-100 p-6 shadow-card hover:border-brand-200 transition-colors">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700 mb-4" aria-hidden="true">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+              </svg>
+            </div>
+            <span class="absolute top-5 right-5 text-4xl font-extrabold text-slate-100 select-none" aria-hidden="true">1</span>
+            <h3 class="text-lg font-semibold text-slate-900 mb-2">Set your goals</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">You decide what success looks like across the five pillars. Your coach works from your goals, not a one-size plan.</p>
+          </article>
+          <!-- Step 2 -->
+          <article class="relative rounded-2xl bg-white border border-slate-100 p-6 shadow-card hover:border-brand-200 transition-colors">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-azure-50 text-azure-700 mb-4" aria-hidden="true">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+            </div>
+            <span class="absolute top-5 right-5 text-4xl font-extrabold text-slate-100 select-none" aria-hidden="true">2</span>
+            <h3 class="text-lg font-semibold text-slate-900 mb-2">Daily check-ins</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Text how each pillar went in your own words. No forms, no app. Just a message. Your coach replies to what you share.</p>
+          </article>
+          <!-- Step 3 -->
+          <article class="relative rounded-2xl bg-white border border-slate-100 p-6 shadow-card hover:border-brand-200 transition-colors">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-100 text-brand-800 mb-4" aria-hidden="true">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+            <span class="absolute top-5 right-5 text-4xl font-extrabold text-slate-100 select-none" aria-hidden="true">3</span>
+            <h3 class="text-lg font-semibold text-slate-900 mb-2">Accountability teams</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Join a small squad of classmates. Light peer nudges keep you honest without the group-chat chaos.</p>
+          </article>
+          <!-- Step 4 -->
+          <article class="relative rounded-2xl bg-white border border-slate-100 p-6 shadow-card hover:border-brand-200 transition-colors">
+            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-700 mb-4" aria-hidden="true">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <span class="absolute top-5 right-5 text-4xl font-extrabold text-slate-100 select-none" aria-hidden="true">4</span>
+            <h3 class="text-lg font-semibold text-slate-900 mb-2">Weekly summaries</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Every week, a clear recap of wins and patterns toward the goals you set, plus one focus for next week.</p>
+          </article>
+        </div>
+        <p class="mt-10 text-center text-sm text-slate-500 max-w-xl mx-auto">
+          <span class="font-medium text-slate-700">Example check-in:</span> “Had a great workout, hydration was solid, and ate well. Sleep and stress relief need some work.”
+        </p>
+      </div>
+    </section>
+
+    <!-- Pillars -->
+    <section id="pillars" class="py-20 sm:py-24 bg-gradient-to-b from-slate-50 to-white">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="text-center max-w-2xl mx-auto mb-14">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-600 mb-3">Framework</p>
+          <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">The 5 Pillars of College Health</h2>
+          <p class="mt-4 text-lg text-slate-600">You choose which pillars to focus on and what success looks like. Your coach helps with small habits you stack onto routines you already have, not overhauls.</p>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Hydration -->
+          <article class="rounded-2xl bg-white border border-slate-100 p-6 shadow-card flex gap-4">
+            <div class="shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-100 text-brand-700" aria-hidden="true">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-label="Hydration">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3.25c.4 0 2.5 2.8 3.8 6.1C17.2 12.8 17.5 15 16 17c-1.2 1.6-3 2.5-4 2.5s-2.8-.9-4-2.5c-1.5-2-.8-4.2.5-7.65C9.7 6.05 11.6 3.25 12 3.25z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-slate-900 text-lg">Hydration</h3>
+              <p class="mt-1 text-sm text-slate-600 leading-relaxed">Gentle reminders to drink water between lectures — before the afternoon crash hits.</p>
+            </div>
+          </article>
+          <!-- Food -->
+          <article class="rounded-2xl bg-white border border-slate-100 p-6 shadow-card flex gap-4">
+            <div class="shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-azure-100 text-azure-700" aria-hidden="true">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-label="Food">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 3v7a2 2 0 002 2h0a2 2 0 002-2V3M9 3v18M17 21V3c-2 0-3.5 2.5-3.5 6s1.5 4 3.5 4" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-slate-900 text-lg">Food</h3>
+              <p class="mt-1 text-sm text-slate-600 leading-relaxed">Real food, fewer wheat and refined carbs. Simple dining-hall swaps built around protein, veggies, and beans.</p>
+            </div>
+          </article>
+          <!-- Exercise -->
+          <article class="rounded-2xl bg-white border border-slate-100 p-6 shadow-card flex gap-4">
+            <div class="shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-50 text-brand-800" aria-hidden="true">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-label="Exercise">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-slate-900 text-lg">Exercise</h3>
+              <p class="mt-1 text-sm text-slate-600 leading-relaxed">Micro-movement that fits a packed schedule: walks between buildings, short gym sessions, stretch breaks.</p>
+            </div>
+          </article>
+          <!-- Sleep -->
+          <article class="rounded-2xl bg-white border border-slate-100 p-6 shadow-card flex gap-4">
+            <div class="shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-700" aria-hidden="true">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-label="Sleep">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-slate-900 text-lg">Sleep</h3>
+              <p class="mt-1 text-sm text-slate-600 leading-relaxed">Wind-down cues and sleep check-ins that respect all-nighters — then help you recover after.</p>
+            </div>
+          </article>
+          <!-- Low-stress Reset -->
+          <article class="rounded-2xl bg-white border border-slate-100 p-6 shadow-card flex gap-4 sm:col-span-2 lg:col-span-1">
+            <div class="shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-azure-50 text-azure-600" aria-hidden="true">
+              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-label="Low-stress Reset">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-slate-900 text-lg">Low-stress Reset</h3>
+              <p class="mt-1 text-sm text-slate-600 leading-relaxed">Quick breathwork and 2-minute micro-resets you can do between classes. Box breathing, longer exhales, then back to it.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="py-20 sm:py-24">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <p class="text-sm font-semibold uppercase tracking-wider text-brand-600 mb-3">Pricing</p>
+          <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">Student-friendly by design</h2>
+          <p class="mt-4 text-lg text-slate-600">Two clear plans. Same coaching either way. Cancel anytime. Early access members lock in founding pricing.</p>
+        </div>
+        <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-6 items-stretch">
+          <!-- Monthly -->
+          <div class="relative flex flex-col rounded-3xl border border-slate-200 bg-white p-8 shadow-card">
+            <div class="absolute top-0 right-0 bg-slate-100 text-slate-600 text-xs font-semibold uppercase tracking-wide px-4 py-1.5 rounded-bl-xl rounded-tr-3xl">
+              Early access
+            </div>
+            <p class="text-sm font-medium text-brand-700 mb-1">Monthly</p>
+            <div class="flex items-baseline gap-1 mb-2">
+              <span class="text-5xl font-extrabold text-slate-900 tracking-tight">$8</span>
+              <span class="text-slate-500 font-medium">/month</span>
+            </div>
+            <p class="text-sm text-slate-600 mb-6">Less than a campus coffee run, for coaching that follows your lead.</p>
+            <ul class="space-y-3 mb-8" role="list">
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                Goals you set across five pillars
+              </li>
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                Daily text check-ins in your own words
+              </li>
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                Accountability team matching
+              </li>
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                Weekly summaries toward your goals
+              </li>
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                Works on any phone. No app required
+              </li>
+            </ul>
+            <a href="#signup" class="mt-auto flex w-full items-center justify-center rounded-full bg-white hover:bg-slate-50 text-brand-700 font-semibold py-3.5 border-2 border-brand-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2">
+              Reserve early access
+            </a>
+            <p class="mt-4 text-center text-xs text-slate-500">No charge today. We’ll reach out when your spot opens.</p>
+          </div>
+          <!-- Annual -->
+          <div class="relative flex flex-col rounded-3xl border-2 border-brand-500 bg-white p-8 shadow-soft">
+            <div class="absolute top-0 right-0 bg-azure-500 text-white text-xs font-semibold uppercase tracking-wide px-4 py-1.5 rounded-bl-xl rounded-tr-[1.35rem]">
+              Best value
+            </div>
+            <p class="text-sm font-medium text-brand-700 mb-1">Annual</p>
+            <div class="flex items-baseline gap-1 mb-1">
+              <span class="text-5xl font-extrabold text-slate-900 tracking-tight">$65</span>
+              <span class="text-slate-500 font-medium">/year</span>
+            </div>
+            <p class="text-sm font-medium text-brand-700 mb-2">Save $31 vs. monthly <span class="font-normal text-slate-500">(about $5.42/mo)</span></p>
+            <p class="text-sm text-slate-600 mb-6">Pay up front for the school year and save. Same coaching, better rate.</p>
+            <ul class="space-y-3 mb-8" role="list">
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                Goals you set across five pillars
+              </li>
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                Daily text check-ins in your own words
+              </li>
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                Accountability team matching
+              </li>
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                Weekly summaries toward your goals
+              </li>
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 text-brand-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                Works on any phone. No app required
+              </li>
+            </ul>
+            <a href="#signup" class="mt-auto flex w-full items-center justify-center rounded-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2">
+              Reserve early access
+            </a>
+            <p class="mt-4 text-center text-xs text-slate-500">No charge today. We’ll reach out when your spot opens.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Signup -->
+    <section id="signup" class="py-20 sm:py-24 bg-gradient-to-br from-navy via-brand-700 to-azure-700 relative overflow-hidden">
+      <div class="absolute inset-0 opacity-20" aria-hidden="true">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-1/4 w-72 h-72 bg-azure-400/40 rounded-full blur-3xl"></div>
+      </div>
+      <div class="relative max-w-xl mx-auto px-4 sm:px-6">
+        <div class="text-center mb-10">
+          <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Get early access</h2>
+          <p class="mt-3 text-brand-100 text-lg">Join the waitlist for campushealthcoach.com. Beta members get first access.</p>
+        </div>
+
+        <div class="rounded-3xl bg-white p-6 sm:p-8 shadow-2xl">
+          <!-- Form (shown by default) -->
+          <form
+            id="early-access-form"
+            name="early-access"
+            method="POST"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            action="/#signup"
+            class="space-y-5"
+            novalidate
+          >
+            <input type="hidden" name="form-name" value="early-access" />
+            <p class="hidden" aria-hidden="true">
+              <label>Don’t fill this out: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+            </p>
+
+            <div>
+              <label for="name" class="block text-sm font-medium text-slate-700 mb-1.5">Full name <span class="text-red-500" aria-hidden="true">*</span></label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                autocomplete="name"
+                placeholder="Alex Rivera"
+                class="form-input w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:bg-white transition-colors"
+              />
+              <p class="error-msg hidden mt-1.5 text-sm text-red-600" data-for="name" role="alert"></p>
+            </div>
+
+            <div>
+              <label for="email" class="block text-sm font-medium text-slate-700 mb-1.5">Email <span class="text-red-500" aria-hidden="true">*</span></label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                autocomplete="email"
+                placeholder="alex@university.edu"
+                class="form-input w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:bg-white transition-colors"
+              />
+              <p class="error-msg hidden mt-1.5 text-sm text-red-600" data-for="email" role="alert"></p>
+            </div>
+
+            <div>
+              <label for="phone" class="block text-sm font-medium text-slate-700 mb-1.5">Phone (for SMS) <span class="text-red-500" aria-hidden="true">*</span></label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                required
+                autocomplete="tel"
+                placeholder="(214) 555-0100"
+                class="form-input w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:bg-white transition-colors"
+              />
+              <p class="error-msg hidden mt-1.5 text-sm text-red-600" data-for="phone" role="alert"></p>
+            </div>
+
+            <div>
+              <label for="school" class="block text-sm font-medium text-slate-700 mb-1.5">School / university <span class="text-slate-400 font-normal">(optional)</span></label>
+              <input
+                type="text"
+                id="school"
+                name="school"
+                autocomplete="organization"
+                placeholder="Your university"
+                class="form-input w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:bg-white transition-colors"
+              />
+            </div>
+
+            <button
+              type="submit"
+              id="submit-btn"
+              class="w-full rounded-full bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3.5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              Request early access
+            </button>
+            <p class="text-xs text-center text-slate-500">
+              By submitting, you agree we may contact you about CampusHealthCoach. Message &amp; data rates may apply for SMS.
+            </p>
+          </form>
+
+          <!-- Success state (hidden until submit) -->
+          <div id="form-success" class="hidden text-center py-6" role="status" aria-live="polite">
+            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand-100 text-brand-600 mb-5" aria-hidden="true">
+              <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900 mb-2">You’re on the list</h3>
+            <p class="text-slate-600 leading-relaxed max-w-sm mx-auto">
+              Thanks for joining early access. We’ll text or email you when your spot at CampusHealthCoach opens up.
+            </p>
+            <button type="button" id="reset-form" class="mt-6 text-sm font-medium text-brand-700 hover:text-brand-800 underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 rounded">
+              Submit another response
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div>
+          <p class="font-bold text-white text-lg tracking-tight">
+            Campus<span class="text-brand-400">Health</span>Coach
+          </p>
+          <p class="mt-1 text-sm max-w-sm">SMS-based AI health coaching for college students. Your goals. Your words. Real accountability.</p>
+        </div>
+        <nav class="flex flex-wrap gap-x-6 gap-y-2 text-sm" aria-label="Footer">
+          <a href="#how-it-works" class="hover:text-white transition-colors">How it works</a>
+          <a href="#pillars" class="hover:text-white transition-colors">Pillars</a>
+          <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+          <a href="#signup" class="hover:text-white transition-colors">Early access</a>
+          <a href="#privacy" class="hover:text-white transition-colors">Privacy</a>
+          <a href="#terms" class="hover:text-white transition-colors">Terms</a>
+        </nav>
+      </div>
+      <div class="mt-8 pt-8 border-t border-slate-800 text-xs">
+        <p>&copy; <span id="year"></span> CampusHealthCoach. All rights reserved. campushealthcoach.com</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Placeholder anchors for privacy/terms -->
+  <div id="privacy" class="sr-only" aria-hidden="true"></div>
+  <div id="terms" class="sr-only" aria-hidden="true"></div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
