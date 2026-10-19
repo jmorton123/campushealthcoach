@@ -9,7 +9,7 @@
   // Optional: paste a Formspree endpoint here (e.g. 'https://formspree.io/f/abcdwxyz')
   // to collect signups on GitHub Pages, Vercel, or any static host.
   // Leave empty to use Netlify Forms (only works when hosted on Netlify).
-  var FORM_ENDPOINT = '';
+  var FORM_ENDPOINT = 'https://formsubmit.co/ajax/j.jeffmorton@gmail.com';
 
   var form = document.getElementById('early-access-form');
   var success = document.getElementById('form-success');
@@ -158,7 +158,11 @@
       fetch(FORM_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(Object.assign({
+          _subject: 'New CampusHealthCoach early-access signup',
+          _template: 'table',
+          _captcha: 'false'
+        }, payload))
       })
         .then(function () { finish(); })
         .catch(function () { finish(); });
