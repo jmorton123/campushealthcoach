@@ -160,6 +160,11 @@
       showError('coach', 'Please pick a coach.');
       ok = false;
     }
+    var consentBox = document.getElementById('sms_consent');
+    if (consentBox && !consentBox.checked) {
+      showError('sms_consent', 'Please agree to receive coaching texts so your coach can reach you.');
+      ok = false;
+    }
     return ok;
   }
 
@@ -217,6 +222,12 @@
       phone: fieldValue('phone'),
       school: fieldValue('school'),
       coach: selectedCoach(),
+      sms_consent: 'yes',
+      sms_consent_timestamp: new Date().toISOString(),
+      sms_consent_text: (function () {
+        var wrap = document.querySelector('label[for="sms_consent"] span');
+        return wrap ? wrap.textContent.replace(/\s+/g, ' ').trim() : '';
+      })(),
       submittedAt: new Date().toISOString()
     };
 
@@ -229,6 +240,8 @@
     body.set('phone', payload.phone);
     body.set('school', payload.school);
     body.set('coach', payload.coach);
+    body.set('sms_consent', payload.sms_consent);
+    body.set('sms_consent_timestamp', payload.sms_consent_timestamp);
 
     var finish = function () {
       showSuccess();

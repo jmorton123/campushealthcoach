@@ -541,6 +541,24 @@
               <p class="error-msg hidden mt-1.5 text-sm text-red-600" data-for="phone" role="alert"></p>
             </div>
 
+            <!-- SMS consent (required for carrier registration; unchecked by default) -->
+            <div id="sms-consent-wrap" class="rounded-xl border border-brand-100 bg-brand-50/60 p-3.5">
+              <label for="sms_consent" class="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="sms_consent"
+                  name="sms_consent"
+                  value="yes"
+                  required
+                  class="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-brand-600 accent-[#354CA1] focus:ring-brand-500"
+                />
+                <span class="text-xs leading-relaxed text-slate-600">
+                  I agree to receive recurring automated coaching texts from CampusHealthCoach at the number provided. Msg frequency varies (about 1-3/day). Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent isn't a condition of purchase. See our <a href="sms-terms.html" class="font-medium text-brand-700 underline underline-offset-2 hover:text-brand-800">SMS Terms</a> and <a href="privacy.html" class="font-medium text-brand-700 underline underline-offset-2 hover:text-brand-800">Privacy Policy</a>.
+                </span>
+              </label>
+              <p class="error-msg hidden mt-1.5 text-sm text-red-600" data-for="sms_consent" role="alert"></p>
+            </div>
+
 
             <!--
               Choose your coach — 2x2 grid (ready for 4).
@@ -610,7 +628,7 @@
               Request early access
             </button>
             <p class="text-xs text-center text-slate-500">
-              By submitting, you agree we may contact you about CampusHealthCoach. Message &amp; data rates may apply for SMS.
+              We may also email you about your CampusHealthCoach account. See our <a href="privacy.html" class="underline underline-offset-2 hover:text-brand-700">Privacy Policy</a>.
             </p>
           </form>
 
@@ -649,8 +667,8 @@
           <a href="#pillars" class="hover:text-white transition-colors">Pillars</a>
           <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
           <a href="#signup" class="hover:text-white transition-colors">Early access</a>
-          <a href="#privacy" class="hover:text-white transition-colors">Privacy</a>
-          <a href="#terms" class="hover:text-white transition-colors">Terms</a>
+          <a href="privacy.html" class="hover:text-white transition-colors">Privacy</a>
+          <a href="sms-terms.html" class="hover:text-white transition-colors">SMS Terms</a>
         </nav>
       </div>
       <div class="mt-8 pt-8 border-t border-slate-800 text-xs">
@@ -658,10 +676,6 @@
       </div>
     </div>
   </footer>
-
-  <!-- Placeholder anchors for privacy/terms -->
-  <div id="privacy" class="sr-only" aria-hidden="true"></div>
-  <div id="terms" class="sr-only" aria-hidden="true"></div>
 
   <script src="app.js" defer></script>
 </body>
