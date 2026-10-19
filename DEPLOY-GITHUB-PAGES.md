@@ -17,12 +17,35 @@
 6. Go to **Settings > Pages**. Under "Build and deployment", set Source to **Deploy from a branch**, Branch to **main** and folder **/ (root)**, then **Save**.
 7. Wait 1–2 minutes and refresh. Your site is live at `https://campushealthcoach.com` (or `https://jmorton123.github.io/campushealthcoach/` before the custom domain is set).
 
-## Option B: Command line
+## Option B: Command line (first-time setup only)
 ```bash
 cd /workspace/campushealthcoach
 gh auth login            # once, if using the GitHub CLI
 ./deploy-to-github.sh jmorton123
 ```
+This creates the repo and pushes `main`. Day-to-day updates go to `gh-pages`; see below.
+
+## How the live site actually deploys (gh-pages branch)
+GitHub Pages serves **campushealthcoach.com from the `gh-pages` branch** (root), not `main`.
+`main` holds the source and docs; pushing `main` alone does **not** change the live site.
+`gh-pages` holds only the served files: `index.html`, `sms-terms.html`, `privacy.html`, `app.js`,
+`README.md`, `.nojekyll`, and `CNAME` (never edit or remove `CNAME`, it carries the custom domain).
+
+To deploy changed site files (normal push, never force):
+```bash
+cd /workspace/campushealthcoach
+git push origin main                                   # 1. publish the source commit
+git fetch origin
+git worktree add /tmp/ghp origin/gh-pages -b ghp-deploy # 2. check out gh-pages next to main
+cd /tmp/ghp
+git checkout main -- index.html sms-terms.html privacy.html   # 3. bring over ONLY the changed files
+git commit -m "Deploy: <what changed>"
+git push origin ghp-deploy:gh-pages                    # 4. normal push
+cd - && git worktree remove /tmp/ghp && git branch -D ghp-deploy
+gh api repos/jmorton123/campushealthcoach/pages/builds/latest --jq .status   # 5. wait for "built"
+curl -s https://campushealthcoach.com/ | grep -i "you set the pace"         # 6. verify live
+```
+Or run `./deploy-to-github.sh --pages index.html sms-terms.html privacy.html`, which does steps 1-5.
 
 ## Using campushealthcoach.com
 Custom domain is configured. DNS at Namecheap:
