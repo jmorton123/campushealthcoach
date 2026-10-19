@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="CampusHealthCoach SMS Terms: program description, message frequency, rates, STOP and HELP, and disclosures." />
+  <meta name="theme-color" content="#354CA1" />
+  <title>SMS Terms | CampusHealthCoach</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // Primary brand blue #354CA1; azure accent #1570EF (AA with white); navy #1E2A5A
+            brand: {
+              50: '#eef0f8',
+              100: '#dce1f1',
+              200: '#b8c3e3',
+              300: '#8a9ad0',
+              400: '#5c74bd',
+              500: '#4560b0',
+              600: '#354CA1',
+              700: '#2a3d82',
+              800: '#213066',
+              900: '#1a264f',
+            },
+            azure: {
+              50: '#eef3ff',
+              100: '#dce7ff',
+              200: '#b8cfff',
+              300: '#7aa8f7',
+              400: '#2F80ED',
+              500: '#1570EF',
+              600: '#1A56DB',
+              700: '#1D4ED8',
+              800: '#1E3A8A',
+              900: '#1E2A5A',
+            },
+            navy: {
+              DEFAULT: '#1E2A5A',
+            },
+            slate: {
+              850: '#1a2332',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            soft: '0 4px 24px -4px rgba(53, 76, 161, 0.14)',
+            card: '0 8px 32px -8px rgba(15, 23, 42, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+    .hero-blob {
+      background: radial-gradient(ellipse at 30% 20%, rgba(53, 76, 161, 0.16), transparent 50%),
+                  radial-gradient(ellipse at 80% 55%, rgba(21, 112, 239, 0.12), transparent 45%),
+                  radial-gradient(ellipse at 50% 100%, rgba(30, 42, 90, 0.08), transparent 40%);
+    }
+    .form-input:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(53, 76, 161, 0.28);
+    }
+    .nav-blur {
+      backdrop-filter: saturate(180%) blur(12px);
+      -webkit-backdrop-filter: saturate(180%) blur(12px);
+    }
+    .coach-card {
+      cursor: pointer;
+      transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+    }
+    .coach-card:has(input:checked) {
+      border-color: #354CA1;
+      background-color: #eef0f8;
+      box-shadow: 0 0 0 1px #354CA1;
+    }
+    .coach-card:has(input:focus-visible) {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(53, 76, 161, 0.35);
+    }
+    #coach-fieldset.coach-invalid .coach-card {
+      border-color: #f87171;
+    }
+    .coach-card input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+      margin: 0;
+    }
+    .legal h2 { font-size: 1.25rem; font-weight: 700; color: #1E2A5A; margin-top: 2.25rem; margin-bottom: 0.75rem; }
+    .legal h3 { font-size: 1rem; font-weight: 600; color: #0f172a; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+    .legal p { margin-bottom: 0.9rem; line-height: 1.75; color: #475569; }
+    .legal ul { list-style: disc; padding-left: 1.4rem; margin-bottom: 1rem; color: #475569; }
+    .legal li { margin-bottom: 0.4rem; line-height: 1.7; }
+    .legal a { color: #2a3d82; text-decoration: underline; text-underline-offset: 2px; }
+    .legal strong { color: #0f172a; }
+  </style>
+</head>
+<body class="font-sans text-slate-800 antialiased bg-white">
+
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-brand-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg">
+    Skip to content
+  </a>
+
+  <!-- Header -->
+  <header class="fixed top-0 inset-x-0 z-50 nav-blur bg-white/80 border-b border-slate-100">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 group" aria-label="CampusHealthCoach home">
+        <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-soft" aria-hidden="true">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
+        </span>
+        <span class="font-bold text-slate-900 tracking-tight text-lg">
+          Campus<span class="text-brand-600">Health</span>Coach
+        </span>
+      </a>
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600" aria-label="Primary">
+        <a href="index.html#how-it-works" class="hover:text-brand-700 transition-colors">How it works</a>
+        <a href="index.html#pillars" class="hover:text-brand-700 transition-colors">Pillars</a>
+        <a href="index.html#pricing" class="hover:text-brand-700 transition-colors">Pricing</a>
+        <a href="index.html#signup" class="inline-flex items-center justify-center rounded-full bg-brand-600 hover:bg-brand-700 text-white px-5 py-2.5 shadow-soft transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2">
+          Get early access
+        </a>
+      </nav>
+      <a href="index.html#signup" class="md:hidden inline-flex items-center rounded-full bg-brand-600 text-white text-sm font-medium px-4 py-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">
+        Sign up
+      </a>
+    </div>
+  </header>
+
+  <main id="main" class="pt-16">
+    <section class="hero-blob border-b border-slate-100">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 py-14 sm:py-20">
+        <p class="text-sm font-semibold uppercase tracking-wider text-brand-600 mb-3">CampusHealthCoach</p>
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">SMS Terms</h1>
+        <p class="mt-3 text-sm text-slate-500">Last updated: October 19, 2026</p>
+      </div>
+    </section>
+    <article class="legal max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-[15px]">
+
+      <p>These SMS Terms apply to the CampusHealthCoach text message program. By checking the consent box at sign-up and providing your mobile number, you agree to these terms and our <a href="privacy.html">Privacy Policy</a>.</p>
+
+      <h2>1. Program name</h2>
+      <p><strong>CampusHealthCoach</strong></p>
+
+      <h2>2. Program description</h2>
+      <p>CampusHealthCoach is a beta AI health coaching program for college students, delivered by text message. After you sign up, you will receive recurring automated text messages, including:</p>
+      <ul>
+        <li><strong>Daily check-in texts</strong> asking how your goals and the 5 Pillars of College Health (Hydration, Food, Exercise, Sleep, and Low-stress Reset) went.</li>
+        <li><strong>Coaching replies</strong> responding to what you share, with small, practical habit tips.</li>
+        <li><strong>Weekly summaries</strong> of your progress, plus optional team updates if you join a team.</li>
+      </ul>
+
+      <h2>3. Message frequency</h2>
+      <p>Message frequency varies, usually about 1&ndash;3 messages per day, plus replies to messages you send us.</p>
+
+      <h2>4. Cost</h2>
+      <p><strong>Message and data rates may apply.</strong> Check with your mobile carrier for details about your plan. Any CampusHealthCoach subscription fee is separate and is described on our <a href="index.html#pricing">pricing</a> section.</p>
+
+      <h2>5. How to opt out</h2>
+      <p>You can cancel text messages at any time. <strong>Reply STOP</strong> to any message. You will receive one final message confirming that you have been unsubscribed, and you will receive no further messages unless you sign up again. You can also reply STOPALL, UNSUBSCRIBE, CANCEL, END, or QUIT. To rejoin, reply START.</p>
+
+      <h2>6. How to get help</h2>
+      <p><strong>Reply HELP</strong> to any message for help, or email <a href="mailto:j.jeffmorton@gmail.com">j.jeffmorton@gmail.com</a>.</p>
+
+      <h2>7. Consent</h2>
+      <p>By opting in, you agree to receive recurring automated coaching texts from CampusHealthCoach at the number you provided. Consent is not a condition of any purchase. You confirm that you are the account holder or authorized user of the mobile number and that you are 18 or older.</p>
+
+      <h2>8. Carrier disclaimer</h2>
+      <p>Mobile carriers are not liable for delayed or undelivered messages. Message delivery is subject to effective transmission from your mobile carrier and is not guaranteed.</p>
+
+      <h2>9. Your coach is AI</h2>
+      <p>Your CampusHealthCoach coach (Coach Marcus, Coach Deuce, Coach Anna, or Coach Sophia) is an automated AI assistant, not a human. Replies are generated by an AI model and may sometimes be inaccurate or incomplete. Use your own judgment.</p>
+
+      <h2>10. Not medical advice</h2>
+      <p>CampusHealthCoach provides general wellness and habit coaching only. It is not medical, nutritional, or mental health advice, diagnosis, or treatment, and it does not replace a doctor or other qualified professional. Do not use CampusHealthCoach for urgent needs. Texts are not monitored in real time.</p>
+      <div class="rounded-2xl border border-brand-200 bg-brand-50 p-5 my-6">
+        <p class="!mb-0 !text-slate-800"><strong>In an emergency, call 911.</strong> If you are in crisis or thinking about harming yourself, call or text <strong>988</strong> (Suicide &amp; Crisis Lifeline, U.S.) any time.</p>
+      </div>
+
+      <h2>11. Privacy</h2>
+      <p>We respect your privacy. No mobile information will be shared with third parties or affiliates for marketing or promotional purposes. See our <a href="privacy.html">Privacy Policy</a> for full details on how we collect, use, and protect your information.</p>
+
+      <h2>12. Changes</h2>
+      <p>We may update these SMS Terms from time to time. We will update the date above, and for important changes we will let active users know by text or email.</p>
+
+      <h2>13. Contact</h2>
+      <p>CampusHealthCoach is operated by an individual. Questions? Email <a href="mailto:j.jeffmorton@gmail.com">j.jeffmorton@gmail.com</a>.</p>
+
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div>
+          <p class="font-bold text-white text-lg tracking-tight">
+            Campus<span class="text-brand-400">Health</span>Coach
+          </p>
+          <p class="mt-1 text-sm max-w-sm">SMS-based AI health coaching for college students. Your goals. Your words. Real accountability.</p>
+        </div>
+        <nav class="flex flex-wrap gap-x-6 gap-y-2 text-sm" aria-label="Footer">
+          <a href="index.html#how-it-works" class="hover:text-white transition-colors">How it works</a>
+          <a href="index.html#pillars" class="hover:text-white transition-colors">Pillars</a>
+          <a href="index.html#pricing" class="hover:text-white transition-colors">Pricing</a>
+          <a href="index.html#signup" class="hover:text-white transition-colors">Early access</a>
+          <a href="privacy.html" class="hover:text-white transition-colors">Privacy</a>
+          <a href="sms-terms.html" class="hover:text-white transition-colors">SMS Terms</a>
+        </nav>
+      </div>
+      <div class="mt-8 pt-8 border-t border-slate-800 text-xs">
+        <p>&copy; <span id="year"></span> CampusHealthCoach. All rights reserved. campushealthcoach.com</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var y = document.getElementById('year');
+      if (y) y.textContent = String(new Date().getFullYear());
+    })();
+  </script>
+</body>
+</html>
