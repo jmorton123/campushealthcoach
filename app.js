@@ -1,15 +1,16 @@
 /**
  * CampusHealthCoach — early-access form
- * Progressive enhancement: validates client-side, shows success UI,
- * stores a local copy, and still posts to Netlify Forms when hosted there.
+ * Validates client-side, then posts each sign-up (all fields + SMS consent
+ * record + timestamps) to FormSubmit, which emails it to the owner's inbox.
+ * The success message only shows after FormSubmit confirms it received it.
  */
 (function () {
   'use strict';
 
-  // Optional: paste a Formspree endpoint here (e.g. 'https://formspree.io/f/abcdwxyz')
-  // to collect signups on GitHub Pages, Vercel, or any static host.
-  // Leave empty to use Netlify Forms (only works when hosted on Netlify).
-  var FORM_ENDPOINT = 'https://formsubmit.co/ajax/j.jeffmorton@gmail.com';
+  // Sign-ups go to FormSubmit (formsubmit.co), which emails every submission
+  // to the owner's inbox. The random string is FormSubmit's alias for the
+  // inbox address, so the address itself isn't exposed in the page source.
+  var FORM_ENDPOINT = 'https://formsubmit.co/ajax/14ade8e0644cace45235befb08280af2';
 
   // ---------------------------------------------------------------------------
   // COACHES — edit names / taglines / colors HERE (and mirror the HTML fallback
@@ -198,15 +199,38 @@
     }
   }
 
-  function detectNetlify() {
-    return true;
+  function showSubmitError(message) {
+    var el = document.getElementById('submit-error');
+    if (!el) {
+      el = document.createElement('p');
+      el.id = 'submit-error';
+      el.setAttribute('role', 'alert');
+      el.className = 'text-sm text-center text-red-600';
+      var btn = document.getElementById('submit-btn');
+      if (btn && btn.parentNode) btn.parentNode.insertBefore(el, btn.nextSibling);
+      else form.appendChild(el);
+    }
+    el.textContent = message;
+    el.classList.remove('hidden');
+  }
+
+  function hideSubmitError() {
+    var el = document.getElementById('submit-error');
+    if (el) el.classList.add('hidden');
   }
 
   form.addEventListener('submit', function (event) {
     event.preventDefault();
+    hideSubmitError();
     if (!validate()) {
       var firstInvalid = form.querySelector('[aria-invalid="true"]');
       if (firstInvalid) firstInvalid.focus();
+      return;
+    }
+
+    // Honeypot: real people never fill this hidden field.
+    if (fieldValue('bot-field')) {
+      showSuccess();
       return;
     }
 
@@ -216,6 +240,7 @@
       submitBtn.textContent = 'Submitting…';
     }
 
+    var now = new Date().toISOString();
     var payload = {
       name: fieldValue('name'),
       email: fieldValue('email'),
@@ -223,57 +248,58 @@
       school: fieldValue('school'),
       coach: selectedCoach(),
       sms_consent: 'yes',
-      sms_consent_timestamp: new Date().toISOString(),
       sms_consent_text: (function () {
         var wrap = document.querySelector('label[for="sms_consent"] span');
         return wrap ? wrap.textContent.replace(/\s+/g, ' ').trim() : '';
       })(),
-      submittedAt: new Date().toISOString()
+      sms_consent_timestamp: now,
+      submitted_at: now,
+      page_url: location.href.split('#')[0]
     };
 
-    saveLocal(payload);
-
-    var body = new URLSearchParams();
-    body.set('form-name', 'early-access');
-    body.set('name', payload.name);
-    body.set('email', payload.email);
-    body.set('phone', payload.phone);
-    body.set('school', payload.school);
-    body.set('coach', payload.coach);
-    body.set('sms_consent', payload.sms_consent);
-    body.set('sms_consent_timestamp', payload.sms_consent_timestamp);
-
-    var finish = function () {
-      showSuccess();
+    var resetButton = function () {
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Request early access';
       }
     };
 
-    if (FORM_ENDPOINT && window.fetch) {
-      fetch(FORM_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(Object.assign({
-          _subject: 'New CampusHealthCoach early-access signup',
-          _template: 'table',
-          _captcha: 'false'
-        }, payload))
-      })
-        .then(function () { finish(); })
-        .catch(function () { finish(); });
-    } else if (detectNetlify() && window.fetch && location.protocol !== 'file:') {
-      fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body.toString()
-      })
-        .then(function () { finish(); })
-        .catch(function () { finish(); });
-    } else {
-      finish();
+    var fail = function () {
+      resetButton();
+      showSubmitError('Sorry, something went wrong and your sign-up was not sent. Please try again in a minute, or email j.jeffmorton@gmail.com.');
+    };
+
+    if (!FORM_ENDPOINT || !window.fetch) {
+      fail();
+      return;
     }
+
+    fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(Object.assign({
+        _subject: 'New CampusHealthCoach early-access signup',
+        _template: 'table',
+        _captcha: 'false'
+      }, payload))
+    })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          return { ok: res.ok, data: data };
+        });
+      })
+      .then(function (r) {
+        var good = r.ok && r.data && (r.data.success === true || r.data.success === 'true');
+        if (good) {
+          saveLocal(payload);
+          resetButton();
+          showSuccess();
+        } else {
+          if (window.console) console.warn('Sign-up not accepted:', r.data && r.data.message);
+          fail();
+        }
+      })
+      .catch(function () { fail(); });
   });
 
   if (resetBtn) {
