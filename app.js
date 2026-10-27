@@ -1,7 +1,7 @@
 /**
  * CampusHealthCoach — early-access form
- * Validates client-side, then posts each sign-up (all fields + SMS consent
- * record + timestamps) to FormSubmit, which emails it to the owner's inbox.
+ * Validates client-side, then posts each sign-up (all fields + the optional
+ * SMS consent choice, yes or no, with text + timestamp only when yes) to FormSubmit, which emails it to the owner's inbox.
  * The success message only shows after FormSubmit confirms it received it.
  */
 (function () {
@@ -161,11 +161,7 @@
       showError('coach', 'Please pick a coach.');
       ok = false;
     }
-    var consentBox = document.getElementById('sms_consent');
-    if (consentBox && !consentBox.checked) {
-      showError('sms_consent', 'Please agree to receive coaching texts so your coach can reach you.');
-      ok = false;
-    }
+    // Texting consent is optional: never block sign-up on it.
     return ok;
   }
 
@@ -241,18 +237,22 @@
     }
 
     var now = new Date().toISOString();
+    var consentBox = document.getElementById('sms_consent');
+    var smsOptIn = !!(consentBox && consentBox.checked);
+    var consentText = function () {
+      var el = document.getElementById('sms_consent_text');
+      return el ? el.textContent.replace(/\s+/g, ' ').trim() : '';
+    };
     var payload = {
       name: fieldValue('name'),
       email: fieldValue('email'),
       phone: fieldValue('phone'),
       school: fieldValue('school'),
       coach: selectedCoach(),
-      sms_consent: 'yes',
-      sms_consent_text: (function () {
-        var wrap = document.querySelector('label[for="sms_consent"] span');
-        return wrap ? wrap.textContent.replace(/\s+/g, ' ').trim() : '';
-      })(),
-      sms_consent_timestamp: now,
+      sms_consent: smsOptIn ? 'yes' : 'no',
+      sms_consent_text: smsOptIn ? consentText() : '',
+      sms_consent_timestamp: smsOptIn ? now : '',
+      contact_preference: smsOptIn ? 'text and email' : 'email only (did not opt in to texts)',
       submitted_at: now,
       page_url: location.href.split('#')[0]
     };
