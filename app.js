@@ -153,8 +153,13 @@
       showError('email', 'Please enter a valid email address.');
       ok = false;
     }
-    if (!phone || !isValidPhone(phone)) {
-      showError('phone', 'Please enter a valid phone number (at least 10 digits).');
+    // Phone is optional. It is only needed if the student checks the optional texting box.
+    var wantsTexts = !!(document.getElementById('sms_consent') || {}).checked;
+    if (phone && !isValidPhone(phone)) {
+      showError('phone', 'Please enter a valid mobile number (at least 10 digits), or leave it blank.');
+      ok = false;
+    } else if (wantsTexts && !phone) {
+      showError('phone', 'Add your mobile number to get coaching texts, or leave the texting box unchecked.');
       ok = false;
     }
     if (!coach) {

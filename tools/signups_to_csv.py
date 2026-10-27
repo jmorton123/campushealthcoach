@@ -42,11 +42,13 @@ def parse_fields(msg):
         out[html.unescape(k).strip()] = html.unescape(v).strip()
     if not out:  # plain-text fallback: "key\t\r\n ... value\t"
         body = msg.get("body") or ""
+        # Cells end with a tab, so splitting on tabs gives key, value, key, value...
+        # Keep empty cells (e.g. sms_consent_text when the student did not opt in).
         toks = [html.unescape(t.strip()) for t in re.split(r"\t", body)]
-        toks = [t for t in toks if t]
         for i, t in enumerate(toks[:-1]):
-            if t in FIELDS:
-                out[t] = toks[i + 1]
+            if t in FIELDS and t not in out:
+                v = toks[i + 1]
+                out[t] = "" if v in FIELDS else v
     return out
 
 
