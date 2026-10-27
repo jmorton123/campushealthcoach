@@ -530,7 +530,7 @@
             </div>
 
             <div>
-              <label for="phone" class="block text-sm font-medium text-slate-700 mb-1.5">Phone (for SMS) <span class="text-red-500" aria-hidden="true">*</span></label>
+              <label for="phone" class="block text-sm font-medium text-slate-700 mb-1.5">Mobile number <span class="text-red-500" aria-hidden="true">*</span></label>
               <input
                 type="tel"
                 id="phone"
@@ -543,7 +543,7 @@
               <p class="error-msg hidden mt-1.5 text-sm text-red-600" data-for="phone" role="alert"></p>
             </div>
 
-            <!-- SMS consent (required for carrier registration; unchecked by default) -->
+            <!-- SMS consent: OPTIONAL, unchecked by default. Not a condition of signing up. -->
             <div id="sms-consent-wrap" class="rounded-xl border border-brand-100 bg-brand-50/60 p-3.5">
               <label for="sms_consent" class="flex items-start gap-3 cursor-pointer">
                 <input
@@ -551,14 +551,13 @@
                   id="sms_consent"
                   name="sms_consent"
                   value="yes"
-                  required
                   class="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-brand-600 accent-[#354CA1] focus:ring-brand-500"
                 />
                 <span class="text-xs leading-relaxed text-slate-600">
-                  I agree to receive recurring automated coaching texts from CampusHealthCoach at the number provided. Msg frequency varies; you set the pace. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Consent isn't a condition of purchase. See our <a href="sms-terms.html" class="font-medium text-brand-700 underline underline-offset-2 hover:text-brand-800">SMS Terms</a> and <a href="privacy.html" class="font-medium text-brand-700 underline underline-offset-2 hover:text-brand-800">Privacy Policy</a>.
+                  <span id="sms_consent_text">Yes, text me coaching messages from CampusHealthCoach at the number provided. Msg frequency varies; you set the pace. Msg &amp; data rates may apply. Reply STOP to opt out, HELP for help. Texting is optional and not a condition of signing up.</span> See our <a href="sms-terms.html" class="font-medium text-brand-700 underline underline-offset-2 hover:text-brand-800">SMS Terms</a> and <a href="privacy.html" class="font-medium text-brand-700 underline underline-offset-2 hover:text-brand-800">Privacy Policy</a>.
                 </span>
               </label>
-              <p class="error-msg hidden mt-1.5 text-sm text-red-600" data-for="sms_consent" role="alert"></p>
+              <p class="mt-2 pl-7 text-xs text-slate-500">Optional. Skip the box and we will only contact you by email.</p>
             </div>
 
 
@@ -643,7 +642,7 @@
             </div>
             <h3 class="text-2xl font-bold text-slate-900 mb-2">You’re on the list</h3>
             <p class="text-slate-600 leading-relaxed max-w-sm mx-auto">
-              Thanks for joining early access. We’ll text or email you when your spot at CampusHealthCoach opens up.
+              Thanks for joining early access. We’ll reach out when your spot at CampusHealthCoach opens up: by text if you checked the texting box, otherwise by email.
             </p>
             <button type="button" id="reset-form" class="mt-6 text-sm font-medium text-brand-700 hover:text-brand-800 underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 rounded">
               Submit another response

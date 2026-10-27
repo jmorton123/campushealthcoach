@@ -20,6 +20,7 @@ import csv, html, json, os, re, sys
 OUT = os.environ.get("SIGNUPS_CSV", "/workspace/signups.csv")
 FIELDS = ["submitted_at", "name", "email", "phone", "school", "coach",
           "sms_consent", "sms_consent_timestamp", "sms_consent_text",
+          "contact_preference",
           "page_url", "is_test", "gmail_message_id", "email_date"]
 
 
