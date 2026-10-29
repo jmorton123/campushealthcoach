@@ -27,9 +27,9 @@
       avatarClass: 'bg-brand-600'
     },
     {
-      id: 'deuce',
-      value: 'Coach Deuce',
-      initial: 'D',
+      id: 'rip',
+      value: 'Coach Rip',
+      initial: 'R',
       tone: 'High-energy and fun',
       avatarClass: 'bg-azure-600'
     },
