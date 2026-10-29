@@ -3,6 +3,8 @@
  * Validates client-side, then posts each sign-up (all fields + the optional
  * SMS consent choice, yes or no, with text + timestamp only when yes) to FormSubmit, which emails it to the owner's inbox.
  * The success message only shows after FormSubmit confirms it received it.
+ * Then, only for students who opted in to texts with a phone, the same fields are also
+ * posted in the background to the coaching engine (ENGINE_SIGNUP_URL; off while empty).
  */
 (function () {
   'use strict';
@@ -11,6 +13,12 @@
   // to the owner's inbox. The random string is FormSubmit's alias for the
   // inbox address, so the address itself isn't exposed in the page source.
   var FORM_ENDPOINT = 'https://formsubmit.co/ajax/14ade8e0644cace45235befb08280af2';
+
+  // Coaching engine signup endpoint. Fill in when the engine is hosted, e.g.
+  // 'https://campushealthcoach-engine.fly.dev/signup'. Empty = feature off (nothing is sent).
+  // Only students who checked the texting box AND entered a phone are sent, after FormSubmit
+  // has confirmed the sign-up. It runs in the background and can never block or fail the sign-up.
+  var ENGINE_SIGNUP_URL = '';
 
   // ---------------------------------------------------------------------------
   // COACHES — edit names / taglines / colors HERE (and mirror the HTML fallback
@@ -220,6 +228,25 @@
     if (el) el.classList.add('hidden');
   }
 
+  // Background post to the coaching engine. Fire-and-forget: every error is swallowed, and the
+  // student has already seen the success message. The engine holds new students until Jeff approves.
+  function notifyEngine(payload) {
+    try {
+      if (!ENGINE_SIGNUP_URL || !window.fetch || !window.URLSearchParams) return;
+      if (payload.sms_consent !== 'yes' || !payload.phone) return;
+      var body = new URLSearchParams();
+      ['name', 'email', 'phone', 'school', 'coach', 'sms_consent', 'sms_consent_text',
+        'sms_consent_timestamp', 'page_url', 'submitted_at', 'plan', 'ref'].forEach(function (k) {
+        if (payload[k]) body.append(k, payload[k]);
+      });
+      // URL-encoded body = a "simple" CORS request (no preflight); keepalive lets it finish if the page closes.
+      fetch(ENGINE_SIGNUP_URL, { method: 'POST', mode: 'cors', credentials: 'omit', keepalive: true, body: body })
+        .catch(function () { /* engine down: Jeff still has the FormSubmit email; CSV import is the backup */ });
+    } catch (e) {
+      /* never let this affect the sign-up */
+    }
+  }
+
   form.addEventListener('submit', function (event) {
     event.preventDefault();
     hideSubmitError();
@@ -299,6 +326,7 @@
           saveLocal(payload);
           resetButton();
           showSuccess();
+          notifyEngine(payload);
         } else {
           if (window.console) console.warn('Sign-up not accepted:', r.data && r.data.message);
           fail();
