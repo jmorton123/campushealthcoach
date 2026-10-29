@@ -3,6 +3,10 @@
  * Validates client-side, then posts each sign-up (all fields + the optional
  * SMS consent choice, yes or no, with text + timestamp only when yes) to FormSubmit, which emails it to the owner's inbox.
  * The success message only shows after FormSubmit confirms it received it.
+ * Then, only for students who opted in to texts with a phone, the same fields are also
+ * posted in the background to the coaching engine (ENGINE_SIGNUP_URL; off while empty).
+ * Backup: if FormSubmit fails (down, error, timeout), the whole sign-up (texting or not) is sent
+ * to the engine instead with _backup=1, which saves it; the error only shows if both fail.
  */
 (function () {
   'use strict';
@@ -11,6 +15,12 @@
   // to the owner's inbox. The random string is FormSubmit's alias for the
   // inbox address, so the address itself isn't exposed in the page source.
   var FORM_ENDPOINT = 'https://formsubmit.co/ajax/14ade8e0644cace45235befb08280af2';
+
+  // Coaching engine signup endpoint. Fill in when the engine is hosted, e.g.
+  // 'https://campushealthcoach-engine.fly.dev/signup'. Empty = feature off (nothing is sent).
+  // Only students who checked the texting box AND entered a phone are sent, after FormSubmit
+  // has confirmed the sign-up. It runs in the background and can never block or fail the sign-up.
+  var ENGINE_SIGNUP_URL = 'https://campushealthcoach-engine.fly.dev/signup';
 
   // ---------------------------------------------------------------------------
   // COACHES — edit names / taglines / colors HERE (and mirror the HTML fallback
@@ -132,10 +142,49 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 
-  function isValidPhone(value) {
-    var digits = value.replace(/\D/g, '');
-    return digits.length >= 10 && digits.length <= 15;
+  // US mobile numbers: 10 digits. A pasted +1 / leading 1, spaces, dots and parentheses are tolerated.
+  function phoneDigits(value) {
+    var d = String(value || '').replace(/\D/g, '');
+    if (d.charAt(0) === '1') d = d.slice(1); // country code (US area codes never start with 1)
+    return d.slice(0, 10);
   }
+
+  // 6175551234 -> 617-555-1234 (partial input formats as it goes: 617, 617-555, 617-555-1)
+  function formatPhone(value) {
+    var d = phoneDigits(value);
+    if (d.length <= 3) return d;
+    if (d.length <= 6) return d.slice(0, 3) + '-' + d.slice(3);
+    return d.slice(0, 3) + '-' + d.slice(3, 6) + '-' + d.slice(6);
+  }
+
+  function isValidPhone(value) {
+    return /^[2-9]\d{9}$/.test(phoneDigits(value)) && String(value || '').replace(/\D/g, '').length <= 11;
+  }
+
+  // Format the phone box as the student types or pastes, keeping the caret after the same digit.
+  (function attachPhoneFormatter() {
+    var input = document.getElementById('phone');
+    if (!input) return;
+    input.addEventListener('input', function () {
+      var raw = input.value;
+      var caret = typeof input.selectionStart === 'number' ? input.selectionStart : raw.length;
+      var digitsBefore = phoneDigits(raw.slice(0, caret)).length;
+      // a leading 1 stripped from the whole value also shifts digits before the caret
+      if (raw.replace(/\D/g, '').charAt(0) === '1' && raw.slice(0, caret).replace(/\D/g, '').charAt(0) !== '1') {
+        digitsBefore = Math.max(0, digitsBefore - 1);
+      }
+      var formatted = formatPhone(raw);
+      if (formatted === raw) return;
+      input.value = formatted;
+      var pos = 0, seen = 0;
+      while (pos < formatted.length && seen < digitsBefore) {
+        if (/\d/.test(formatted.charAt(pos))) seen++;
+        pos++;
+      }
+      try { if (document.activeElement === input) input.setSelectionRange(pos, pos); } catch (e) { /* ignore */ }
+    });
+    input.addEventListener('blur', function () { input.value = formatPhone(input.value); });
+  })();
 
   function validate() {
     clearErrors();
@@ -156,7 +205,7 @@
     // Phone is optional. It is only needed if the student checks the optional texting box.
     var wantsTexts = !!(document.getElementById('sms_consent') || {}).checked;
     if (phone && !isValidPhone(phone)) {
-      showError('phone', 'Please enter a valid mobile number (at least 10 digits), or leave it blank.');
+      showError('phone', 'Please enter a 10-digit US mobile number, like 617-555-1234, or leave it blank.');
       ok = false;
     } else if (wantsTexts && !phone) {
       showError('phone', 'Add your mobile number to get coaching texts, or leave the texting box unchecked.');
@@ -220,6 +269,25 @@
     if (el) el.classList.add('hidden');
   }
 
+  // Background post to the coaching engine. Fire-and-forget: every error is swallowed, and the
+  // student has already seen the success message. The engine holds new students until Jeff approves.
+  function notifyEngine(payload) {
+    try {
+      if (!ENGINE_SIGNUP_URL || !window.fetch || !window.URLSearchParams) return;
+      if (payload.sms_consent !== 'yes' || !payload.phone) return;
+      var body = new URLSearchParams();
+      ['name', 'email', 'phone', 'school', 'coach', 'sms_consent', 'sms_consent_text',
+        'sms_consent_timestamp', 'page_url', 'submitted_at', 'plan', 'ref'].forEach(function (k) {
+        if (payload[k]) body.append(k, payload[k]);
+      });
+      // URL-encoded body = a "simple" CORS request (no preflight); keepalive lets it finish if the page closes.
+      fetch(ENGINE_SIGNUP_URL, { method: 'POST', mode: 'cors', credentials: 'omit', keepalive: true, body: body })
+        .catch(function () { /* engine down: Jeff still has the FormSubmit email; CSV import is the backup */ });
+    } catch (e) {
+      /* never let this affect the sign-up */
+    }
+  }
+
   form.addEventListener('submit', function (event) {
     event.preventDefault();
     hideSubmitError();
@@ -251,7 +319,7 @@
     var payload = {
       name: fieldValue('name'),
       email: fieldValue('email'),
-      phone: fieldValue('phone'),
+      phone: fieldValue('phone') ? formatPhone(fieldValue('phone')) : '',
       school: fieldValue('school'),
       coach: selectedCoach(),
       sms_consent: smsOptIn ? 'yes' : 'no',
@@ -274,12 +342,48 @@
       showSubmitError('Sorry, something went wrong and your sign-up was not sent. Please try again in a minute, or email j.jeffmorton@gmail.com.');
     };
 
-    if (!FORM_ENDPOINT || !window.fetch) {
+    var succeed = function () {
+      saveLocal(payload);
+      resetButton();
+      showSuccess();
+    };
+
+    // FormSubmit failed: send the whole sign-up to the engine, which saves it (signups list --backup).
+    var backupOrFail = function (reason) {
+      try {
+        if (!ENGINE_SIGNUP_URL || !window.fetch || !window.URLSearchParams) { fail(); return; }
+        var body = new URLSearchParams();
+        Object.keys(payload).forEach(function (k) { if (payload[k]) body.append(k, payload[k]); });
+        body.append('_backup', '1');
+        body.append('_backup_reason', String(reason || 'unknown').slice(0, 80));
+        fetch(ENGINE_SIGNUP_URL, { method: 'POST', mode: 'cors', credentials: 'omit', body: body })
+          .then(function (res) {
+            return res.json().catch(function () { return {}; }).then(function (d) { return { ok: res.ok, data: d }; });
+          })
+          .then(function (r) {
+            if (r.ok && r.data && r.data.ok === true && r.data.backup_saved === true) succeed();
+            else fail();
+          })
+          .catch(function () { fail(); });
+      } catch (e) {
+        fail();
+      }
+    };
+
+    if (!window.fetch) {
       fail();
       return;
     }
+    if (!FORM_ENDPOINT) {
+      backupOrFail('no_formsubmit');
+      return;
+    }
+
+    var controller = window.AbortController ? new AbortController() : null;
+    var timer = controller ? setTimeout(function () { controller.abort(); }, 15000) : null;
 
     fetch(FORM_ENDPOINT, {
+      signal: controller ? controller.signal : undefined,
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(Object.assign({
@@ -294,17 +398,20 @@
         });
       })
       .then(function (r) {
+        if (timer) clearTimeout(timer);
         var good = r.ok && r.data && (r.data.success === true || r.data.success === 'true');
         if (good) {
-          saveLocal(payload);
-          resetButton();
-          showSuccess();
+          succeed();
+          notifyEngine(payload);
         } else {
           if (window.console) console.warn('Sign-up not accepted:', r.data && r.data.message);
-          fail();
+          backupOrFail('formsubmit_rejected');
         }
       })
-      .catch(function () { fail(); });
+      .catch(function (err) {
+        if (timer) clearTimeout(timer);
+        backupOrFail(err && err.name === 'AbortError' ? 'formsubmit_timeout' : 'formsubmit_network');
+      });
   });
 
   if (resetBtn) {
